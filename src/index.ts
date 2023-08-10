@@ -1,25 +1,12 @@
-import * as fs from 'fs'
 import { NodeSSH } from 'node-ssh';
-import dotenv from 'dotenv'
-import * as process from "process";
 import {checkIsFileExist, removeFile, zipDirector} from './fileOperation.ts'
-import {outPutFileName,curTime} from './config.ts'
-dotenv.config()
+import {outPutFileName,curTime, sshConfig as config} from './config.ts'
 
 let args = process.argv.splice(2),
     isRollback = args.includes('rollback');
 
 
 const ssh = new NodeSSH();
-
-// SSH连接配置
-const config = {
-    host: process.env.HOST || '127.0.0.1',
-    port: process.env.SSHPORT || 22,
-    username: process.env.USERNAME || 'root',
-    privateKey: process.env.SSHKEY || fs.readFileSync(process.env.KEYFILE || '/.ssh/id_rsa').toString(),
-    pathUrl: process.env.REMOTEPATH
-};
 
 // 本地文件上传至远程服务器
 const uploadFile = () => {
@@ -31,7 +18,7 @@ const uploadFile = () => {
             port: Number(config.port),
         })
         .then(async ()=>{
-            await checkIsFileExist(ssh,'/www/wwwroot/yihuiblog.top/dist')
+            await checkIsFileExist(ssh,`${config.pathUrl}/dist`)
         })
         .then(() => {
             console.log('SSH login success');
