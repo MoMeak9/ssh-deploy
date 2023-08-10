@@ -14,9 +14,6 @@ dependencies:
   node-ssh:
     specifier: ^13.1.0
     version: 13.1.0
-  ssh2:
-    specifier: ^1.14.0
-    version: 1.14.0
 
 devDependencies:
   '@rollup/plugin-commonjs':
@@ -37,6 +34,9 @@ devDependencies:
   '@types/ssh2':
     specifier: ^1.11.13
     version: 1.11.13
+  '@types/ssh2-streams':
+    specifier: ^0.1.9
+    version: 0.1.9
   nodemon:
     specifier: ^3.0.1
     version: 3.0.1
@@ -199,6 +199,12 @@ packages:
 
   /@types/resolve@1.20.2:
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
+    dev: true
+
+  /@types/ssh2-streams@0.1.9:
+    resolution: {integrity: sha512-I2J9jKqfmvXLR5GomDiCoHrEJ58hAOmFrekfFqmCFd+A6gaEStvWnPykoWUwld1PNg4G5ag1LwdA+Lz1doRJqg==}
+    dependencies:
+      '@types/node': 18.17.4
     dev: true
 
   /@types/ssh2@1.11.13:

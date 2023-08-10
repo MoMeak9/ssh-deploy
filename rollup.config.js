@@ -10,6 +10,7 @@ export default {
             outDir: "dist",
             declaration: true,
             declarationDir: "dist",
+            
         }),
         nodeResolve({
             preferBuiltins: true
@@ -20,6 +21,7 @@ export default {
     output: [{
         file: "dist/index.cjs",
         format: "cjs",
+        sourcemap: true,
     }],
-    external: ['node-ssh']
+    external: ['node-ssh', 'dotenv', 'archiver']
 };
