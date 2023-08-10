@@ -1,15 +1,20 @@
 {
-  "name": "ssh-deploy",
+  "name": "ssh-2-deploy",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.cjs",
-  "module": "dist/index.cjs",
+  "main": "dist/index.mjs",
+  "module": "dist/index.mjs",
   "scripts": {
     "dev": "ts-node src/index.ts",
     "watch": "nodemon src/index.ts",
     "build": "tsc --noEmit && rollup -c",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": [
+    "dist",
+    "src",
+    "package.json"
+  ],
   "type": "module",
   "keywords": [],
   "author": "",

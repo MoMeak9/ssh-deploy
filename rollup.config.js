@@ -10,7 +10,7 @@ export default {
             outDir: "dist",
             declaration: true,
             declarationDir: "dist",
-            
+
         }),
         nodeResolve({
             preferBuiltins: true
@@ -19,8 +19,8 @@ export default {
         json()
     ],
     output: [{
-        file: "dist/index.cjs",
-        format: "cjs",
+        file: "dist/index.mjs",
+        format: "es",
         sourcemap: true,
     }],
     external: ['node-ssh', 'dotenv', 'archiver']
