@@ -2,7 +2,8 @@
   "name": "ssh-deploy",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.cjs",
+  "module": "dist/index.cjs",
   "scripts": {
     "dev": "nodemon src/index.ts",
     "build": "tsc --noEmit && rollup -c",
@@ -19,6 +20,8 @@
     "@rollup/plugin-typescript": "^11.1.2",
     "@types/archiver": "^5.3.2",
     "@types/ssh2": "^1.11.13",
+    "archiver": "^5.3.1",
+    "dotenv": "^16.3.1",
     "nodemon": "^3.0.1",
     "rollup": "^3.28.0",
     "ts-node": "^10.9.1",
@@ -26,8 +29,6 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "archiver": "^5.3.1",
-    "dotenv": "^16.3.1",
     "node-ssh": "^13.1.0"
   }
 }
