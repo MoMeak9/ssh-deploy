@@ -1,31 +1,33 @@
 import { NodeSSH } from 'node-ssh';
 import {checkIsFileExist, removeFile, zipDirector} from './fileOperation.ts'
-import {outPutFileName,curTime, sshConfig as config} from './config.ts'
+import {outPutFileName,curTime} from './config.ts'
+import {getArgs} from "./args.ts";
 
 let args = process.argv.splice(2),
     isRollback = args.includes('rollback');
 
 
 const ssh = new NodeSSH();
+const config = await getArgs()
 
 // 本地文件上传至远程服务器
 const uploadFile = () => {
     ssh
         .connect({
-            host: config.host,
-            username: config.username,
-            privateKey: config.privateKey,
-            port: Number(config.port),
+            host: config?.host,
+            username: config?.username,
+            privateKey: config?.privateKey,
+            port: Number(config?.port),
         })
         .then(async ()=>{
-            await checkIsFileExist(ssh,`${config.pathUrl}/dist`)
+            await checkIsFileExist(ssh,`${config?.pathUrl}/dist`)
         })
         .then(() => {
             console.log('SSH login success');
             ssh
                 .putFile(
                     `${process.cwd()}/${outPutFileName}`,
-                    `${config.pathUrl}/${outPutFileName}`
+                    `${config?.pathUrl}/${outPutFileName}`
                 )
                 .then(() => {
                     console.log('The zip file is upload successful');
@@ -49,7 +51,7 @@ const remoteFileUpdate = () => {
         : `mv dist dist.bak${curTime} && unzip ${outPutFileName}`;
     ssh
         .execCommand(cmd, {
-            cwd: config.pathUrl,
+            cwd: config?.pathUrl,
         })
         .then((result:any) => {
             console.log(`The update message is: ${result.stdout}`);
