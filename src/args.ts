@@ -7,7 +7,7 @@ import yargs from 'yargs/yargs'
 import {hideBin} from 'yargs/helpers'
 
 
-interface IAns {
+export interface IAns {
     host: string,
     port: number | string
     username: string
@@ -97,4 +97,3 @@ export const getArgs = async () => {
     }
 }
 
-getArgs()

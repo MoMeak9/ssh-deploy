@@ -9,8 +9,7 @@
     "watch": "nodemon src/index.ts",
     "build": "tsc --noEmit && rollup -c",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test-arg": "npm run ssh-2-deploy -- --serve=22",
-    "ssh-2-deploy": "s2d --help"
+    "commit": "git add . && git-cz && git push"
   },
   "bin": {
     "s2d": "./dist/index.cjs"
@@ -43,7 +42,7 @@
   "dependencies": {
     "archiver": "^5.3.1",
     "dotenv": "^16.3.1",
-    "inquirer": "^9.2.10",
+    "inquirer": "^8.2.6",
     "node-ssh": "^13.1.0",
     "yargs": "^17.7.2"
   }

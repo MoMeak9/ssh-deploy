@@ -1,14 +1,14 @@
-import { NodeSSH } from 'node-ssh';
+import {NodeSSH} from 'node-ssh';
 import {checkIsFileExist, removeFile, zipDirector} from './fileOperation.ts'
-import {outPutFileName,curTime} from './config.ts'
-import {getArgs} from "./args.ts";
+import {outPutFileName, curTime} from './config.ts'
+import {getArgs, IAns} from "./args.ts";
 
 let args = process.argv.splice(2),
     isRollback = args.includes('rollback');
 
 
 const ssh = new NodeSSH();
-const config = {} as any
+let config: IAns | undefined
 
 // 本地文件上传至远程服务器
 const uploadFile = () => {
@@ -19,8 +19,8 @@ const uploadFile = () => {
             privateKey: config?.privateKey,
             port: Number(config?.port),
         })
-        .then(async ()=>{
-            await checkIsFileExist(ssh,`${config?.pathUrl}/dist`)
+        .then(async () => {
+            await checkIsFileExist(ssh, `${config?.pathUrl}/dist`)
         })
         .then(() => {
             console.log('SSH login success');
@@ -33,12 +33,12 @@ const uploadFile = () => {
                     console.log('The zip file is upload successful');
                     remoteFileUpdate();
                 })
-                .catch((err:any) => {
+                .catch((err: any) => {
                     console.log('the file upload fail:', err);
                     process.exit(0);
                 });
         })
-        .catch((err:any) => {
+        .catch((err: any) => {
             console.log('SSH conneting fail:', err);
             process.exit(0);
         });
@@ -53,7 +53,7 @@ const remoteFileUpdate = () => {
         .execCommand(cmd, {
             cwd: config?.pathUrl,
         })
-        .then((result:any) => {
+        .then((result: any) => {
             console.log(`The update message is: ${result.stdout}`);
             removeFile(`${process.cwd()}/${outPutFileName}`)
             if (!result.stderr) {
@@ -67,14 +67,16 @@ const remoteFileUpdate = () => {
 };
 
 
-// 回滚代码
-if (isRollback) {
-    remoteFileUpdate();
-} else {
-    // 更新代码
-    zipDirector(uploadFile);
+const main = async () => {
+    // 获取参数
+    config = await getArgs()
+    // 回滚代码
+    if (isRollback) {
+        remoteFileUpdate();
+    } else {
+        // 更新代码
+        await zipDirector(uploadFile);
+    }
 }
-//
-export default {
-    zipDirector
-}
+
+main()
