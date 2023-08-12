@@ -19,9 +19,10 @@ export default {
         json()
     ],
     output: [{
-        file: "dist/index.mjs",
-        format: "es",
+        file: "dist/index.cjs",
+        format: "cjs",
         sourcemap: true,
+        banner: '#!/usr/bin/env node',
     }],
-    external: ['node-ssh', 'dotenv', 'archiver']
+    external: ['node-ssh', 'dotenv', 'archiver','inquirer','yargs']
 };

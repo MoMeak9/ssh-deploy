@@ -3,6 +3,10 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
+import yargs from 'yargs/yargs'
+import {hideBin} from 'yargs/helpers'
+
+
 interface IAns {
     host: string,
     port: number | string
@@ -15,6 +19,25 @@ interface IAns {
 
 const prompt = inquirer.createPromptModule();
 
+
+const argv = yargs(hideBin(process.argv))
+    .command('serve', 'start the server', (yargs) => {
+        return yargs
+            .positional('port', {
+                describe: 'port to bind on',
+                default: 5000
+            })
+    }, (argv) => {
+        if (argv.verbose) console.info(`start server on :${argv.port}`)
+    })
+    .option('verbose', {
+        alias: 'v',
+        type: 'boolean',
+        description: 'Run with verbose logging'
+    })
+    .parse()
+
+console.log(argv)
 export const getArgs = async () => {
     try {
         const ans = await prompt([
@@ -73,3 +96,5 @@ export const getArgs = async () => {
         console.error(e)
     }
 }
+
+getArgs()

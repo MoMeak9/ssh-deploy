@@ -8,7 +8,7 @@ let args = process.argv.splice(2),
 
 
 const ssh = new NodeSSH();
-const config = await getArgs()
+const config = {} as any
 
 // 本地文件上传至远程服务器
 const uploadFile = () => {
