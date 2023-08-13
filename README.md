@@ -33,6 +33,6 @@ SSH_PASSWORD=123456
 SSH_KEY=/Users/xxx/.ssh/id_rsa || 密钥内容
 REMOTE_PATH=/root/www
 SSH_KEYFILE=/Users/xxx/.ssh/id_rsa || 密钥文件
-LOCAL_PATH=./dist
+LOCAL_PATH=/dist
 ```
 

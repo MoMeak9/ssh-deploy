@@ -8,6 +8,9 @@ dependencies:
   archiver:
     specifier: ^5.3.1
     version: 5.3.1
+  chalk:
+    specifier: ^4.1.2
+    version: 4.1.2
   dotenv:
     specifier: ^16.3.1
     version: 16.3.1
@@ -17,6 +20,9 @@ dependencies:
   node-ssh:
     specifier: ^13.1.0
     version: 13.1.0
+  ora:
+    specifier: ^5.4.1
+    version: 5.4.1
   yargs:
     specifier: ^17.7.2
     version: 17.7.2

@@ -14,6 +14,7 @@ export interface IAns {
     password?: string;
     privateKey?: string;
     pathUrl: string;
+    localPath: string;
 }
 
 const prompt = inquirer.createPromptModule();
@@ -72,6 +73,12 @@ export const getArgs = async (argv: IAns) => {
                 name: 'pathUrl',
                 message: '远程服务器地址（根目录）？',
                 default: argv.pathUrl || process.env.REMOTE_PATH || '',
+            },
+            {
+                type: 'input',
+                name: 'localPath',
+                message: '本地文件路径？',
+                default: argv.localPath || process.env.LOCAL_PATH || '/dist',
             },
         ]);
         if (!ans.password && !ans.privateKey) {

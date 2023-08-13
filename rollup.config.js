@@ -1,28 +1,37 @@
-import typescript from "@rollup/plugin-typescript";
-import {nodeResolve} from '@rollup/plugin-node-resolve';
+import typescript from '@rollup/plugin-typescript';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import json from '@rollup/plugin-json'
+import json from '@rollup/plugin-json';
 
 export default {
-    input: "src/index.ts",
+    input: 'src/index.ts',
     plugins: [
         typescript({
-            outDir: "dist",
+            outDir: 'dist',
             declaration: true,
-            declarationDir: "dist",
-
+            declarationDir: 'dist',
         }),
         nodeResolve({
-            preferBuiltins: true
+            preferBuiltins: true,
         }),
         commonjs(),
-        json()
+        json(),
     ],
-    output: [{
-        file: "dist/index.cjs",
-        format: "cjs",
-        sourcemap: true,
-        banner: '#!/usr/bin/env node',
-    }],
-    external: ['node-ssh', 'dotenv', 'archiver','inquirer','yargs']
+    output: [
+        {
+            file: 'dist/index.cjs',
+            format: 'cjs',
+            sourcemap: true,
+            banner: '#!/usr/bin/env node',
+        },
+    ],
+    external: [
+        'node-ssh',
+        'dotenv',
+        'archiver',
+        'inquirer',
+        'yargs',
+        'chalk',
+        'ora',
+    ],
 };

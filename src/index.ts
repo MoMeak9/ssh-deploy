@@ -1,9 +1,12 @@
 import { NodeSSH } from 'node-ssh';
+import yargs from 'yargs';
+import ora from 'ora';
+
 import { checkIsFileExist, removeFile, zipDirector } from './fileOperation.ts';
 import { outPutFileName, curTime } from './config.ts';
 import { config, getArgs } from './args.ts';
-import yargs from 'yargs/yargs';
 import { hideBin } from 'yargs/helpers';
+import { success, warning, error } from './log.ts';
 
 yargs(hideBin(process.argv))
     .command(
@@ -39,6 +42,10 @@ yargs(hideBin(process.argv))
                 .option('pathUrl', {
                     alias: 'r',
                     describe: '远程服务器地址（根目录）',
+                })
+                .option('localPath', {
+                    alias: 'f',
+                    describe: '本地文件路径',
                 });
         },
         async (argv) => {
@@ -47,9 +54,17 @@ yargs(hideBin(process.argv))
             await zipDirector(uploadFile);
         },
     )
-    .showHelp('log')
-    .help('h')
-    .alias('h', 'help').argv;
+    .command(
+        '*',
+        '默认命令',
+        () => {},
+        () => {
+            console.log(warning('请输入正确的命令'));
+            yargs.showHelp();
+            process.exit(0);
+        },
+    )
+    .parse();
 
 const ssh = new NodeSSH();
 
@@ -62,32 +77,42 @@ const uploadFile = () => {
         port: Number(config?.port),
     })
         .then(async () => {
-            await checkIsFileExist(ssh, `${config?.pathUrl}/dist`);
+            await checkIsFileExist(
+                ssh,
+                `${config?.pathUrl}${config?.localPath}`,
+            );
         })
         .then(() => {
-            console.log('SSH login success');
+            const spinner = ora('Loading').start();
+            spinner.color = 'yellow';
+            spinner.text = 'SSH 连接成功，正在上传文件...';
             ssh.putFile(
                 `${process.cwd()}/${outPutFileName}`,
                 `${config?.pathUrl}/${outPutFileName}`,
             )
                 .then(() => {
-                    console.log('压缩文件上传成功');
+                    console.log(success('压缩文件上传成功'));
+                    spinner.stop();
                     remoteFileUpdate();
                 })
                 .catch((err: any) => {
-                    console.log('文件上传失败：', err);
+                    console.log(error('文件上传失败：'), err);
+                    spinner.stop();
                     process.exit(0);
                 });
         })
         .catch((err: any) => {
-            console.log('SSH 连接失败：', err);
+            console.log(error('SSH 连接失败：'), err);
             process.exit(0);
         });
 };
 //
 // 远端文件更新
 const remoteFileUpdate = () => {
-    const cmd = `mv dist dist.bak${curTime} && unzip ${outPutFileName}`;
+    const dist = config?.localPath.startsWith('/')
+        ? config?.localPath.substring(1)
+        : config?.localPath;
+    const cmd = `mv ${dist} ${dist}.bak${curTime} && unzip ${outPutFileName}`;
     ssh.execCommand(cmd, {
         cwd: config?.pathUrl,
     }).then((result: any) => {
