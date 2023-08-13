@@ -2,7 +2,7 @@ declare namespace NodeJS {
     interface ProcessEnv {
         HOST: 'development' | 'production';
         SSHPORT: string
-        USERNAME: string
+        SSHUSERNAME: string
         PASSWORD: string
         SSHKEY: string
         REMOTEPATH: string

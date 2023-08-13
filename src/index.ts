@@ -1,14 +1,52 @@
 import {NodeSSH} from 'node-ssh';
 import {checkIsFileExist, removeFile, zipDirector} from './fileOperation.ts'
 import {outPutFileName, curTime} from './config.ts'
-import {getArgs, IAns} from "./args.ts";
+import {config, getArgs} from "./args.ts";
+import yargs from "yargs/yargs";
+import {hideBin} from "yargs/helpers";
 
-let args = process.argv.splice(2),
-    isRollback = args.includes('rollback');
+
+yargs(hideBin(process.argv))
+    .command('deploy', '发布服务', (yargs) => {
+        return yargs
+            .option('host', {
+                alias: 'h',
+                describe: '远程服务器地址',
+            })
+            .option('port', {
+                alias: 'p',
+                describe: '远程服务器端口号',
+            })
+            .option('username', {
+                alias: 'u',
+                describe: '用户名',
+            })
+            .option('loginWay', {
+                alias: 'l',
+                describe: '登入方式',
+                default: '密钥 key'
+            })
+            .option('password', {
+                alias: 'w',
+                describe: '远程服务器密码',
+            })
+            .option('privateKey', {
+                alias: 'k',
+                describe: '远程服务器密钥 | 密钥文件地址',
+            })
+            .option('pathUrl', {
+                alias: 'r',
+                describe: '远程服务器地址（根目录）',
+            })
+    }, async (argv) => {
+        await getArgs(argv as any)
+        // 更新代码
+        await zipDirector(uploadFile);
+    })
+    .parse()
 
 
 const ssh = new NodeSSH();
-let config: IAns | undefined
 
 // 本地文件上传至远程服务器
 const uploadFile = () => {
@@ -46,7 +84,7 @@ const uploadFile = () => {
 //
 // 远端文件更新
 const remoteFileUpdate = () => {
-    let cmd = isRollback
+    let cmd = false
         ? `rm dist && mv dist.bak${curTime} dist`
         : `mv dist dist.bak${curTime} && unzip ${outPutFileName}`;
     ssh
@@ -65,18 +103,3 @@ const remoteFileUpdate = () => {
             }
         });
 };
-
-
-const main = async () => {
-    // 获取参数
-    config = await getArgs()
-    // 回滚代码
-    if (isRollback) {
-        remoteFileUpdate();
-    } else {
-        // 更新代码
-        await zipDirector(uploadFile);
-    }
-}
-
-main()

@@ -3,10 +3,6 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-import yargs from 'yargs/yargs'
-import {hideBin} from 'yargs/helpers'
-
-
 export interface IAns {
     host: string,
     port: number | string
@@ -19,45 +15,28 @@ export interface IAns {
 
 const prompt = inquirer.createPromptModule();
 
+export let config: IAns | undefined
 
-const argv = yargs(hideBin(process.argv))
-    .command('serve', 'start the server', (yargs) => {
-        return yargs
-            .positional('port', {
-                describe: 'port to bind on',
-                default: 5000
-            })
-    }, (argv) => {
-        if (argv.verbose) console.info(`start server on :${argv.port}`)
-    })
-    .option('verbose', {
-        alias: 'v',
-        type: 'boolean',
-        description: 'Run with verbose logging'
-    })
-    .parse()
-
-console.log(argv)
-export const getArgs = async () => {
+export const getArgs = async (argv: IAns) => {
     try {
         const ans = await prompt([
             {
                 type: 'input',
                 name: 'host',
                 message: '远程服务器地址？',
-                default: process.env.HOST || '127.0.0.1'
+                default: argv.host || process.env.HOST || '127.0.0.1'
             },
             {
                 type: 'input',
                 name: 'port',
                 message: '远程服务器端口号？',
-                default: process.env.SSHPORT || 22
+                default: argv.port || process.env.SSHPORT || 22
             },
             {
                 type: 'input',
                 name: 'username',
                 message: '用户名？',
-                default: process.env.USERNAME || 'root'
+                default: argv.username || process.env.SSHUSERNAME || 'root'
             },
             {
                 type: 'list',
@@ -71,27 +50,27 @@ export const getArgs = async () => {
                 name: 'password',
                 message: '远程服务器密码？',
                 mask: '*',
-                default: process.env.PASSWORD || '',
+                default: argv.password || process.env.PASSWORD || '',
                 when: (answers: IAns) => answers.loginWay === '密码 password'
             },
             {
                 type: 'input',
                 name: 'privateKey',
                 message: '远程服务器密钥 | 密钥文件地址？',
-                default: process.env.SSHKEY || process.env.SSH_KEYFILE || '',
+                default: argv.privateKey || process.env.SSHKEY || process.env.SSH_KEYFILE || '',
                 when: (answers: IAns) => answers.loginWay === '密钥 key'
             },
             {
                 type: 'input',
                 name: 'pathUrl',
                 message: '远程服务器地址（根目录）？',
-                default: process.env.REMOTEPATH || '',
+                default: argv.pathUrl || process.env.REMOTEPATH || '',
             },
         ])
         if (!ans.password && !ans.privateKey) {
             new Error('无效登入信息，缺少有效的密码 | 密钥')
         }
-        return ans
+        config = ans
     } catch (e) {
         console.error(e)
     }
