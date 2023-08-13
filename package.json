@@ -13,7 +13,10 @@
     "watch": "nodemon src/index.ts",
     "build": "tsc --noEmit && rollup -c",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "commit": "git add . && git-cz && git push"
+    "commit": "git add . && git-cz && git push",
+    "lint": "eslint --ignore-path .gitignore --fix packages",
+    "lint:fix": "npm run lint --fix",
+    "format": "prettier --write \"**/src/**/*.{ts}\""
   },
   "bin": {
     "s2p": "./dist/index.cjs"
@@ -37,7 +40,13 @@
     "@types/ssh2": "^1.11.13",
     "@types/ssh2-streams": "^0.1.9",
     "@types/yargs": "^17.0.24",
+    "@typescript-eslint/eslint-plugin": "^6.3.0",
+    "@typescript-eslint/parser": "^6.3.0",
+    "eslint": "^8.47.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "nodemon": "^3.0.1",
+    "prettier": "^2.8.8",
     "rollup": "^3.28.0",
     "ts-node": "^10.9.1",
     "tslib": "^2.6.1",
