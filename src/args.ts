@@ -33,13 +33,13 @@ export const getArgs = async (argv: IAns) => {
                 type: 'input',
                 name: 'port',
                 message: '远程服务器端口号？',
-                default: argv.port || process.env.SSHPORT || 22,
+                default: argv.port || process.env.SSH_PORT || 22,
             },
             {
                 type: 'input',
                 name: 'username',
                 message: '用户名？',
-                default: argv.username || process.env.SSHUSERNAME || 'root',
+                default: argv.username || process.env.SSH_USERNAME || 'root',
             },
             {
                 type: 'list',
@@ -53,7 +53,7 @@ export const getArgs = async (argv: IAns) => {
                 name: 'password',
                 message: '远程服务器密码？',
                 mask: '*',
-                default: argv.password || process.env.PASSWORD || '',
+                default: argv.password || process.env.SSH_PASSWORD || '',
                 when: (answers: IAns) => answers.loginWay === '密码 password',
             },
             {
@@ -62,7 +62,7 @@ export const getArgs = async (argv: IAns) => {
                 message: '远程服务器密钥 | 密钥文件地址？',
                 default:
                     argv.privateKey ||
-                    process.env.SSHKEY ||
+                    process.env.SSH_KEY ||
                     process.env.SSH_KEYFILE ||
                     '',
                 when: (answers: IAns) => answers.loginWay === '密钥 key',
@@ -71,7 +71,7 @@ export const getArgs = async (argv: IAns) => {
                 type: 'input',
                 name: 'pathUrl',
                 message: '远程服务器地址（根目录）？',
-                default: argv.pathUrl || process.env.REMOTEPATH || '',
+                default: argv.pathUrl || process.env.REMOTE_PATH || '',
             },
         ]);
         if (!ans.password && !ans.privateKey) {

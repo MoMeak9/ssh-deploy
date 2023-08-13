@@ -3,6 +3,7 @@ import { NodeSSH } from 'node-ssh';
 import process from 'process';
 import archiver from 'archiver';
 import { distPath, outPutFileName } from './config.ts';
+
 export const removeFile = (path: string) => {
     fs.unlink(path, (err) => {
         console.log(path);
@@ -15,7 +16,7 @@ export const removeFile = (path: string) => {
 };
 
 /**
- *
+ * 检查远程服务器上的目录是否存在
  */
 export const checkIsFileExist = async (ssh: NodeSSH, path: string) => {
     const result = await ssh.execCommand(
@@ -31,7 +32,7 @@ export const checkIsFileExist = async (ssh: NodeSSH, path: string) => {
 };
 
 // 文件压缩
-export const zipDirector = async (callback: Function) => {
+export const zipDirector = async (callback: any) => {
     const output = fs.createWriteStream(`${process.cwd()}/${outPutFileName}`);
     const archive = archiver('zip', {
         zlib: { level: 9 },

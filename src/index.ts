@@ -7,7 +7,7 @@ import { hideBin } from 'yargs/helpers';
 
 yargs(hideBin(process.argv))
     .command(
-        'deploy',
+        'publish',
         '发布服务',
         (yargs) => {
             return yargs
@@ -47,7 +47,9 @@ yargs(hideBin(process.argv))
             await zipDirector(uploadFile);
         },
     )
-    .parse();
+    .showHelp('log')
+    .help('h')
+    .alias('h', 'help').argv;
 
 const ssh = new NodeSSH();
 
@@ -69,23 +71,23 @@ const uploadFile = () => {
                 `${config?.pathUrl}/${outPutFileName}`,
             )
                 .then(() => {
-                    console.log('The zip file is upload successful');
+                    console.log('压缩文件上传成功');
                     remoteFileUpdate();
                 })
                 .catch((err: any) => {
-                    console.log('the file upload fail:', err);
+                    console.log('文件上传失败：', err);
                     process.exit(0);
                 });
         })
         .catch((err: any) => {
-            console.log('SSH conneting fail:', err);
+            console.log('SSH 连接失败：', err);
             process.exit(0);
         });
 };
 //
 // 远端文件更新
 const remoteFileUpdate = () => {
-    let cmd = `mv dist dist.bak${curTime} && unzip ${outPutFileName}`;
+    const cmd = `mv dist dist.bak${curTime} && unzip ${outPutFileName}`;
     ssh.execCommand(cmd, {
         cwd: config?.pathUrl,
     }).then((result: any) => {
