@@ -1,9 +1,13 @@
 {
-  "name": "ssh-2-deploy",
+  "name": "ssh-publish",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.mjs",
   "module": "dist/index.mjs",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "scripts": {
     "dev": "ts-node src/index.ts",
     "watch": "nodemon src/index.ts",
@@ -12,7 +16,7 @@
     "commit": "git add . && git-cz && git push"
   },
   "bin": {
-    "s2d": "./dist/index.cjs"
+    "s2p": "./dist/index.cjs"
   },
   "files": [
     "dist",
@@ -38,6 +42,13 @@
     "ts-node": "^10.9.1",
     "tslib": "^2.6.1",
     "typescript": "^5.1.6"
+  },
+  "peerDependencies": {
+    "archiver": "^5.3.1",
+    "dotenv": "^16.3.1",
+    "inquirer": "^8.2.6",
+    "node-ssh": "^13.1.0",
+    "yargs": "^17.7.2"
   },
   "dependencies": {
     "archiver": "^5.3.1",

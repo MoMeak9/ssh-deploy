@@ -84,9 +84,7 @@ const uploadFile = () => {
 //
 // 远端文件更新
 const remoteFileUpdate = () => {
-    let cmd = false
-        ? `rm dist && mv dist.bak${curTime} dist`
-        : `mv dist dist.bak${curTime} && unzip ${outPutFileName}`;
+    let cmd = `mv dist dist.bak${curTime} && unzip ${outPutFileName}`;
     ssh
         .execCommand(cmd, {
             cwd: config?.pathUrl,
