@@ -132,3 +132,7 @@ key
 .pnp.*
 
 .idea
+s2p.config.js
+s2p.config.json
+s2p.config.cjs
+s2p.config.mjs

@@ -2,6 +2,7 @@ import inquirer from 'inquirer';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
+import url from 'url';
 import process from 'process';
 
 dotenv.config();
@@ -94,7 +95,30 @@ export const getArgs = async (argv: IAns) => {
                 )
                 .toString();
         }
-        config = ans;
+
+        // config 文件有最高优先级
+        let fileConfig: IAns | undefined;
+        if (fs.existsSync(path.resolve(process.cwd(), 's2p.config.json'))) {
+            const file = fs.readFileSync(
+                path.resolve(process.cwd(), 's2p.config.json'),
+                'utf-8',
+            );
+            fileConfig = JSON.parse(file);
+        } else if (
+            fs.existsSync(path.resolve(process.cwd(), 's2p.config.cjs'))
+        ) {
+            fileConfig = await import(
+                url.pathToFileURL(path.resolve(process.cwd(), 's2p.config.cjs'))
+                    .href
+            );
+        }
+
+        config = {
+            ...ans,
+            ...(fileConfig || {}),
+        };
+
+        console.log('config', config);
     } catch (e) {
         console.error(e);
     }
