@@ -7,6 +7,7 @@ import { outPutFileName, curTime } from './config.ts';
 import { config, getArgs } from './args.ts';
 import { hideBin } from 'yargs/helpers';
 import { success, warning, error } from './log.ts';
+import process from 'process';
 
 yargs(hideBin(process.argv))
     .command(
@@ -46,6 +47,13 @@ yargs(hideBin(process.argv))
                 .option('localPath', {
                     alias: 'f',
                     describe: '本地文件路径',
+                })
+                .option('publishWay', {
+                    alias: 't',
+                })
+                .option('projectName', {
+                    alias: 'n',
+                    describe: '项目名称',
                 });
         },
         async (argv) => {
@@ -108,22 +116,33 @@ const uploadFile = () => {
 };
 //
 // 远端文件更新
-const remoteFileUpdate = () => {
+const remoteFileUpdate = async () => {
     const dist = config?.localPath.startsWith('/')
         ? config?.localPath.substring(1)
         : config?.localPath;
     const cmd = `mv ${dist} ${dist}.bak${curTime} && unzip ${outPutFileName}`;
-    ssh.execCommand(cmd, {
-        cwd: config?.pathUrl,
-    }).then((result: any) => {
-        console.log(`The update message is: ${result.stdout}`);
+    // 更新代码
+    try {
+        const result = await ssh.execCommand(cmd, {
+            cwd: config?.pathUrl,
+        });
+        console.log(success(`更新信息: ${result.stdout}`));
         removeFile(`${process.cwd()}/${outPutFileName}`);
         if (!result.stderr) {
-            console.log('Gratefule! update success!');
-            process.exit(0);
+            console.log(success('更新代码成功'));
         } else {
-            console.log('Something wrong:', result);
-            process.exit(0);
+            console.log(error('更新代码失败：'), result.stderr);
         }
-    });
+        // 重启服务
+        const restart = await ssh.execCommand(
+            `ls -l ${config?.pathUrl}\npm2 restart ${config?.projectName}\n`,
+            {
+                cwd: config?.pathUrl,
+            },
+        );
+        console.log('远程命令输出：\n' + restart.stdout);
+        process.exit(0);
+    } catch (e) {
+        console.log(error('更新代码失败：'), e);
+    }
 };

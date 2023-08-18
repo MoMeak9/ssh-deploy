@@ -16,6 +16,8 @@ export interface IAns {
     privateKey?: string;
     pathUrl: string;
     localPath: string;
+    publishWay: '静态文件' | 'pm2';
+    projectName: string;
 }
 
 const prompt = inquirer.createPromptModule();
@@ -25,6 +27,19 @@ export let config: IAns | undefined;
 export const getArgs = async (argv: IAns) => {
     try {
         const ans = await prompt([
+            {
+                type: 'list',
+                name: 'publishWay',
+                message: '发布方式？',
+                choices: ['静态文件', 'Node.js项目'],
+                validate: (input: string) => {
+                    if (!input) {
+                        return '发布方式不能为空';
+                    }
+                    return true;
+                },
+                default: '静态文件',
+            },
             {
                 type: 'input',
                 name: 'host',
@@ -81,6 +96,13 @@ export const getArgs = async (argv: IAns) => {
                 message: '本地文件路径？',
                 default: argv.localPath || process.env.LOCAL_PATH || '/dist',
             },
+            {
+                type: 'input',
+                name: 'projectName',
+                message: 'pm2项目名称？',
+                default: argv.projectName || process.env.PROJECT_NAME || '',
+                when: (answers: IAns) => answers.publishWay === 'pm2',
+            },
         ]);
         if (!ans.password && !ans.privateKey) {
             new Error('无效登入信息，缺少有效的密码 | 密钥');
@@ -117,8 +139,6 @@ export const getArgs = async (argv: IAns) => {
             ...ans,
             ...(fileConfig || {}),
         };
-
-        console.log('config', config);
     } catch (e) {
         console.error(e);
     }
