@@ -1,6 +1,6 @@
 {
   "name": "ssh-publish",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "",
   "main": "dist/index.cjs",
   "module": "dist/index.cjs",
@@ -16,7 +16,8 @@
     "commit": "git add . && git-cz && git push",
     "lint": "eslint --ignore-path .gitignore --fix packages",
     "lint:fix": "npm run lint --fix",
-    "format": "prettier --write \"**/src/**/*.{ts}\""
+    "format": "prettier --write src",
+    "ci": "npm run build && npm run format && npm run commit && npm publish"
   },
   "bin": {
     "s2p": "./dist/index.cjs"
