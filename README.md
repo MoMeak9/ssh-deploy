@@ -13,13 +13,20 @@ npm install ssh-publish -g
 ```bash
 s2p publish
 ```
-可选入参
+**可选入参:**
+
 `-h`: 主机地址
+
 `-p`: ssh端口
+
 `-u`: ssh用户名
+
 `-w`: ssh密码
+
 `-k`: ssh密钥内容 | ssh密钥文件路径
+
 `-r`: 远程路径
+
 `-l`: 本地路径
 
 ## 配置
@@ -34,5 +41,35 @@ SSH_KEY=/Users/xxx/.ssh/id_rsa || 密钥内容
 REMOTE_PATH=/root/www
 SSH_KEYFILE=/Users/xxx/.ssh/id_rsa || 密钥文件
 LOCAL_PATH=/dist
+PROJECT_NAME=project || 项目名称
 ```
 
+亦或使用json文件进行配置
+```json
+{
+    "HOST": "",
+    "SSH_PORT": 22,
+    "SSH_USERNAME": "root",
+    "SSH_KEY": "",
+    "REMOTE_PATH": "/home/www/wwwroot/mcnavi.cn",
+    "SSH_KEYFILE": "/",
+    "LOCAL_PATH": "/dist",
+    "PROJECT_NAME": "project"
+}
+```
+
+亦或使用cjs文件进行配置
+
+```js
+module.exports = {
+    HOST: '127.0.0.1',
+    SSH_PORT: 22,
+    SSH_USERNAME: 'root',
+    SSH_KEY: `-----BEGIN OPENSSH PRIVATE KEY-----
+-----END OPENSSH PRIVATE KEY-----`,
+    REMOTE_PATH: '/home/www/wwwroot/mcnavi.cn',
+    SSH_KEYFILE: '/',
+    LOCAL_PATH: '/dist',
+    PROJECT_NAME: 'project'
+};
+```
