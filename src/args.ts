@@ -31,7 +31,7 @@ export const getArgs = async (argv: IAns) => {
                 type: 'list',
                 name: 'publishWay',
                 message: '发布方式？',
-                choices: ['静态文件', 'Node.js项目'],
+                choices: ['静态文件', 'pm2'],
                 validate: (input: string) => {
                     if (!input) {
                         return '发布方式不能为空';

@@ -134,6 +134,9 @@ const remoteFileUpdate = async () => {
             console.log(error('更新代码失败：'), result.stderr);
         }
         // 重启服务
+        console.log(
+            `ls -l ${config?.pathUrl}\npm2 restart ${config?.projectName}\n`,
+        );
         const restart = await ssh.execCommand(
             `ls -l ${config?.pathUrl}\npm2 restart ${config?.projectName}\n`,
             {
