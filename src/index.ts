@@ -93,7 +93,7 @@ const uploadFile = () => {
         .then(() => {
             const spinner = ora('Loading').start();
             spinner.color = 'yellow';
-            spinner.text = 'SSH 连接成功，正在上传文件...';
+            spinner.text = 'SSH 连接成功，正在上传文件...\n';
             ssh.putFile(
                 `${process.cwd()}/${outPutFileName}`,
                 `${config?.pathUrl}/${outPutFileName}`,
@@ -126,7 +126,7 @@ const remoteFileUpdate = async () => {
         const result = await ssh.execCommand(cmd, {
             cwd: config?.pathUrl,
         });
-        console.log(success(`更新信息: ${result.stdout}`));
+        console.log(success(`更新信息: \n${result.stdout}`));
         removeFile(`${process.cwd()}/${outPutFileName}`);
         if (!result.stderr) {
             console.log(success('更新代码成功'));
@@ -134,9 +134,9 @@ const remoteFileUpdate = async () => {
             console.log(error('更新代码失败：'), result.stderr);
         }
         // 重启服务
-        console.log(
-            `ls -l ${config?.pathUrl}\npm2 restart ${config?.projectName}\n`,
-        );
+        if (config?.publishWay === '静态文件') {
+            return;
+        }
         const restart = await ssh.execCommand(
             `ls -l ${config?.pathUrl}\npm2 restart ${config?.projectName}\n`,
             {

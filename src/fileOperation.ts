@@ -3,16 +3,16 @@ import { NodeSSH } from 'node-ssh';
 import process from 'process';
 import archiver from 'archiver';
 import { distPath, outPutFileName } from './config.ts';
+import { error, success } from './log.ts';
+import ora from 'ora';
 
 export const removeFile = (path: string) => {
     fs.unlink(path, (err) => {
-        console.log(path);
         if (err) {
             console.error(err);
             return;
         }
     });
-    console.log('临时文件已删除');
 };
 
 /**
@@ -33,6 +33,9 @@ export const checkIsFileExist = async (ssh: NodeSSH, path: string) => {
 
 // 文件压缩
 export const zipDirector = async (callback: any) => {
+    const spinner = ora('Loading').start();
+    spinner.color = 'yellow';
+    spinner.text = '正在压缩文件...\n';
     const output = fs.createWriteStream(`${process.cwd()}/${outPutFileName}`);
     const archive = archiver('zip', {
         zlib: { level: 9 },
@@ -41,19 +44,18 @@ export const zipDirector = async (callback: any) => {
     });
     output.on('close', (err: any) => {
         if (err) {
-            console.log('something error width the zip process:', err);
+            console.log(error('出了点问题'), err);
             return;
         }
         callback();
-        console.log(`${archive.pointer()} total bytes`);
-        console.log(
-            'archiver has been finalized and the output file descriptor has closed.',
-        );
+        console.log(`${(archive.pointer() / 1024).toFixed(2)} KB`);
+        console.log(success(`${'='.repeat(10)}压缩完成${'='.repeat(10)}`));
     });
     output.on('end', () => {
-        console.log('Data has been drained');
+        console.log('数据已完成排出');
     });
     archive.pipe(output);
     archive.directory(distPath, '/dist');
     await archive.finalize();
+    spinner.stop();
 };
